@@ -43,6 +43,11 @@ public class ItemListActivity extends AppCompatActivity {
      */
     private boolean mTwoPane;
 
+
+    /**
+     * Instance of the networkMonitor that is tied to this activity.
+     */
+    private NetworkMonitor networkMonitor = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,8 +90,30 @@ public class ItemListActivity extends AppCompatActivity {
         // TODO: This should be saved and stopped / restarted as the user navigates away from the
         // screen and come back. Each screen will have its own network monitor.
         // If we have all the permissions needed, then go ahead and start the background thread to monitor.
-        new NetworkMonitor().execute(new NetworkMonitorEventListener());
 
+
+    }
+
+    @Override
+    protected void onResume(){
+        System.out.println("OnResume...");
+        super.onResume();
+        if (null == networkMonitor) {
+            networkMonitor = new NetworkMonitor();
+        }
+        if (null != networkMonitor) {
+            networkMonitor.execute(new NetworkMonitorEventListener());
+        }
+    }
+
+    @Override
+    protected void onPause(){
+        System.out.println("onPause...");
+        super.onPause();
+        if (null != networkMonitor) {
+            networkMonitor.cancel(true);
+            networkMonitor = null;
+        }
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
