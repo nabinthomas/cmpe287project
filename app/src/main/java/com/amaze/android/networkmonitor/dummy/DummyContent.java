@@ -1,4 +1,4 @@
-package com.example.app_stats.dummy;
+package com.amaze.android.networkmonitor.dummy;
 
 import java.util.ArrayList;
 import java.util.HashMap;

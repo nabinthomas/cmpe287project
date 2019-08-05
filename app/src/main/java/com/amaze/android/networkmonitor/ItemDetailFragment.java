@@ -1,4 +1,4 @@
-package com.example.app_stats;
+package com.amaze.android.networkmonitor;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.app_stats.dummy.DummyContent;
+import com.amaze.android.networkmonitor.dummy.DummyContent;
 
 /**
  * A fragment representing a single Item detail screen.

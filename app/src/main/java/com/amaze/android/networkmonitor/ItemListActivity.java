@@ -1,4 +1,4 @@
-package com.example.app_stats;
+package com.amaze.android.networkmonitor;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,7 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.app_stats.dummy.DummyContent;
+import com.amaze.android.networkmonitor.dummy.DummyContent;
 
 import java.util.List;
 

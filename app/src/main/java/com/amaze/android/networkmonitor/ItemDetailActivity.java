@@ -1,4 +1,4 @@
-package com.example.app_stats;
+package com.amaze.android.networkmonitor;
 
 import android.content.Intent;
 import android.os.Bundle;

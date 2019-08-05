@@ -1,4 +1,4 @@
-package com.example.app_stats;
+package com.amaze.android.networkmonitor;
 
 import android.content.Context;
 
@@ -22,6 +22,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.example.app_stats", appContext.getPackageName());
+        assertEquals("com.amaze.android.app_stats", appContext.getPackageName());
     }
 }

@@ -1,4 +1,4 @@
-package com.example.app_stats;
+package com.amaze.android.networkmonitor;
 
 import org.junit.Test;
 
