@@ -12,6 +12,8 @@ class NetworkMonitorEventListener {
 public class NetworkMonitor extends AsyncTask<NetworkMonitorEventListener, Integer, Long> {
     protected Long doInBackground(NetworkMonitorEventListener... listener) {
 
+
+
         int i;
 
         for (i = 0; i < 100; i++) {

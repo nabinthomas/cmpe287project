@@ -1,5 +1,6 @@
 package com.amaze.android.networkmonitor;
 
+import android.app.AppOpsManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +22,10 @@ import android.widget.TextView;
 import com.amaze.android.networkmonitor.dummy.DummyContent;
 
 import java.util.List;
+import android.app.AppOpsManager;
+import android.content.Context;
+import android.content.Intent;
+import android.provider.Settings;
 
 /**
  * An activity representing a list of Items. This activity
@@ -67,7 +73,20 @@ public class ItemListActivity extends AppCompatActivity {
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
 
+        // Request Required Permissions when the App is starting.
+        AppOpsManager appOps = (AppOpsManager) getSystemService(Context.APP_OPS_SERVICE);
+        int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
+                android.os.Process.myUid(), getPackageName());
+        if (mode != AppOpsManager.MODE_ALLOWED) {
+            Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+            startActivity(intent);
+        }
+
+        // TODO: This should be saved and stopped / restarted as the user navigates away from the
+        // screen and come back. Each screen will have its own network monitor.
+        // If we have all the permissions needed, then go ahead and start the background thread to monitor.
         new NetworkMonitor().execute(new NetworkMonitorEventListener());
+
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
