@@ -5,13 +5,10 @@ import android.os.AsyncTask;
 
 import androidx.core.view.ViewCompat;
 
-class NetworkMonitorEventListener {
+interface NetworkMonitorEventListener {
 
 
-    public void reportSpeed(long value, NetworkMonitor.Unit unit) {
-
-        System.out.println("Progress Received = " + value + " " + NetworkMonitor.unitToString(unit));
-    }
+    public void handleReportSpeed(long value, NetworkMonitor.Unit unit);
 }
 
 public class NetworkMonitor extends AsyncTask<NetworkMonitorEventListener, Integer, Long> {
@@ -48,6 +45,17 @@ public class NetworkMonitor extends AsyncTask<NetworkMonitorEventListener, Integ
         return units;
     }
 
+    /**
+     * Setup the listener to monitor network traffic from a specific App.
+     * If this is not called, then the monitoring happens for all Apps.
+     *
+     * @return true if successful, false otherwise
+     */
+    public boolean setAppFilter() {
+        /// @todo Setup App filter
+        return true;
+    }
+
     protected Long doInBackground(NetworkMonitorEventListener... listener) {
 
         this.listener = listener[0];
@@ -63,7 +71,7 @@ public class NetworkMonitor extends AsyncTask<NetworkMonitorEventListener, Integ
             }
             publishProgress(i);
             if (this.listener != null)
-                this.listener.reportSpeed(i, NetworkMonitor.Unit.bytesPerSec);
+                this.listener.handleReportSpeed(i, NetworkMonitor.Unit.bytesPerSec);
             if (isCancelled()) break;
         }
         return Long.parseLong("0");
