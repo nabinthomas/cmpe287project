@@ -22,6 +22,11 @@ public class NetworkMonitor extends AsyncTask<NetworkMonitorEventListener, Integ
 
     NetworkMonitorEventListener listener = null;
 
+    /**
+     *  Sampling interval. Default is 5 sec.
+     */
+    long samplingIntervalMs = 5000;
+
     public static String unitToString(Unit unit) {
         String units = "Unknown";
 
@@ -56,6 +61,10 @@ public class NetworkMonitor extends AsyncTask<NetworkMonitorEventListener, Integ
         return true;
     }
 
+    public void setSamplingIntervalMs(long samplingIntervalMs) {
+        this.samplingIntervalMs = samplingIntervalMs;
+    }
+
     protected Long doInBackground(NetworkMonitorEventListener... listener) {
 
         this.listener = listener[0];
@@ -64,7 +73,7 @@ public class NetworkMonitor extends AsyncTask<NetworkMonitorEventListener, Integ
 
         for (i = 0; i < 100; i++) {
             try {
-                Thread.sleep(1000);
+                Thread.sleep(samplingIntervalMs);
             }
             catch (Exception e) {
                 // Ignore
