@@ -66,6 +66,8 @@ public class ItemListActivity extends AppCompatActivity {
         View recyclerView = findViewById(R.id.item_list);
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
+
+        new NetworkMonitor().execute(new NetworkMonitorEventListener());
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
