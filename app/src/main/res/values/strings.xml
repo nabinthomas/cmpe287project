@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Network Monitor</string>
     <string name="title_item_detail">Item Detail</string>
+    <string name="current_total_rx_speed_title"> Current Rx Speed </string>
+    <string name="current_total_tx_speed_title"> Current Tx Speed </string>
+    <string name="default_speed_value"> -- </string>
 </resources>
