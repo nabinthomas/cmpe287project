@@ -177,4 +177,68 @@ public class ItemListActivity extends AppCompatActivity implements NetworkMonito
             }
         }
     }
+
+    public class AppContent {
+
+        /**
+         * An array of sample (App) items.
+         */
+        public final List<AppItem> ITEMS = new ArrayList<AppItem>();
+
+        /**
+         * A map of sample (App) items, by ID.
+         */
+        public final Map<String, AppItem> ITEM_MAP = new HashMap<String, AppItem>();
+
+        private static final int COUNT = 10;
+
+        public AppContent(){
+            PackageManager pm = getApplicationContext().getPackageManager();
+            List<PackageInfo> packages = pm.getInstalledPackages(0);
+
+            // Add app data.
+            int i = 1;
+            for (PackageInfo packageInfo : packages) {
+                addItem(createAppItem(i++, packageInfo.packageName, packageInfo.versionName));
+            }
+        }
+
+        private void addItem(AppItem item) {
+            ITEMS.add(item);
+            ITEM_MAP.put(item.id, item);
+        }
+
+        private AppItem createAppItem(int position, String packageName, String versionName) {
+            return new AppItem(String.valueOf(position), packageName, versionName);
+        }
+
+        private String makeDetails(int position) {
+            StringBuilder builder = new StringBuilder();
+            builder.append("Sans Detailed Stat for App #: ").append(position);
+            for (int i = 0; i < position; i++) {
+                builder.append("\nSans More details information here.");
+            }
+            return builder.toString();
+        }
+
+        /**
+         * A App item representing a piece of content.
+         */
+        public class AppItem {
+            public final String id;
+            public final String content;
+            public final String details;
+
+            public AppItem(String id, String content, String details) {
+                this.id = id;
+                this.content = content;
+                this.details = details;
+            }
+
+            @Override
+            public String toString() {
+                return content;
+            }
+        }
+    }
 }
