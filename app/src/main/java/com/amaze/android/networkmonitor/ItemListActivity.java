@@ -108,6 +108,7 @@ public class ItemListActivity extends AppCompatActivity implements NetworkMonito
         super.onResume();
         if (null == networkMonitor) {
             networkMonitor = new NetworkMonitor();
+            networkMonitor.init(this.getApplicationContext());
         }
         if (null != networkMonitor) {
             networkMonitor.execute(this);

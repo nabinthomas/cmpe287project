@@ -1,7 +1,13 @@
 package com.amaze.android.networkmonitor;
 
 import android.app.Activity;
+import android.app.usage.NetworkStats;
+import android.app.usage.NetworkStatsManager;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
+import android.os.RemoteException;
 
 import androidx.core.view.ViewCompat;
 
@@ -21,6 +27,8 @@ public class NetworkMonitor extends AsyncTask<NetworkMonitorEventListener, Integ
     };
 
     NetworkMonitorEventListener listener = null;
+
+    Context appContext = null;
 
     /**
      *  Sampling interval. Default is 5 sec.
@@ -71,8 +79,31 @@ public class NetworkMonitor extends AsyncTask<NetworkMonitorEventListener, Integ
 
         int i;
 
+        PackageManager pkgMgr = appContext.getPackageManager();
+
+        NetworkStatsManager networkStatsManager = (NetworkStatsManager) appContext.getSystemService(Context.NETWORK_STATS_SERVICE);
+
         for (i = 0; i < 100; i++) {
             try {
+                /*
+                long mobileWifiRx = networkStatsHelper.getAllRxBytesMobile(this) + networkStatsHelper.getAllRxBytesWifi();
+                networkStatsAllRx.setText(mobileWifiRx + " B");
+                long mobileWifiTx = networkStatsHelper.getAllTxBytesMobile(this) + networkStatsHelper.getAllTxBytesWifi();
+                networkStatsAllTx.setText(mobileWifiTx + " B");
+                 */
+                NetworkStats.Bucket bucket = null;
+                try {
+                    bucket = networkStatsManager.querySummaryForDevice(ConnectivityManager.TYPE_WIFI,
+                            // getSubscriberId(context, ConnectivityManager.TYPE_MOBILE),
+                            "",
+                            0, //System.currentTimeMillis() - samplingIntervalMs,
+                            System.currentTimeMillis());
+                } catch (RemoteException e) {
+                    System.out.println("Failed + " + e.toString());
+                }
+
+                System.out.println("RxBytes = " + bucket.getRxBytes());
+                System.out.println("TxBytes = " + bucket.getTxBytes());
                 Thread.sleep(samplingIntervalMs);
             }
             catch (Exception e) {
@@ -93,5 +124,10 @@ public class NetworkMonitor extends AsyncTask<NetworkMonitorEventListener, Integ
 
     protected void onPostExecute(Long result) {
         System.out.println("Result = " + result);
+    }
+
+    protected void init(Context appContext) {
+        this.appContext = appContext;
+
     }
 }
