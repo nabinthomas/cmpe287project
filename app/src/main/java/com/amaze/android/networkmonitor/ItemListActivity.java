@@ -110,9 +110,11 @@ public class ItemListActivity extends AppCompatActivity implements NetworkMonito
         }
     }
 
-    public void handleReportSpeed(long value, NetworkMonitor.Unit unit) {
+    public void handleReportSpeed(long rxValue, NetworkMonitor.Unit rxUnit,
+                                  long txValue, NetworkMonitor.Unit txUnit) {
 
-        System.out.println("Progress Received = " + value + " " + NetworkMonitor.unitToString(unit));
+        System.out.println("Rx Speed Received = " + rxValue + " " + NetworkMonitor.unitToString(rxUnit));
+        System.out.println("Tx Speed Received = " + txValue + " " + NetworkMonitor.unitToString(txUnit));
     }
     private void setupRecyclerView(@NonNull RecyclerView recyclerView, AppContent appContent) {
         recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, appContent.ITEMS, mTwoPane));

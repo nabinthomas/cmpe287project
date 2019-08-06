@@ -7,8 +7,8 @@ import androidx.core.view.ViewCompat;
 
 interface NetworkMonitorEventListener {
 
-
-    public void handleReportSpeed(long value, NetworkMonitor.Unit unit);
+    public void handleReportSpeed(long rxValue, NetworkMonitor.Unit rxUnit,
+                                  long txValue, NetworkMonitor.Unit txUnit);
 }
 
 public class NetworkMonitor extends AsyncTask<NetworkMonitorEventListener, Integer, Long> {
@@ -79,8 +79,10 @@ public class NetworkMonitor extends AsyncTask<NetworkMonitorEventListener, Integ
                 // Ignore
             }
             publishProgress(i);
-            if (this.listener != null)
-                this.listener.handleReportSpeed(i, NetworkMonitor.Unit.bytesPerSec);
+            if (this.listener != null) {
+                this.listener.handleReportSpeed(i, NetworkMonitor.Unit.bytesPerSec,
+                                                100-i, Unit.bytesPerSec);
+            }
             if (isCancelled()) break;
         }
         return Long.parseLong("0");
