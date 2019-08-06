@@ -56,6 +56,17 @@ public class ItemListActivity extends AppCompatActivity implements NetworkMonito
      * Instance of the networkMonitor that is tied to this activity.
      */
     private NetworkMonitor networkMonitor = null;
+
+    /**
+     * Cached reference to the textview which shows the Tx Speed
+     */
+    private TextView txSpeedText = null;
+
+    /**
+     * Cached reference to the textview which shows the Rx Speed
+     */
+    private TextView rxSpeedText = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +83,9 @@ public class ItemListActivity extends AppCompatActivity implements NetworkMonito
             // activity should be in two-pane mode.
             mTwoPane = true;
         }
+
+        txSpeedText = (TextView) findViewById(R.id.id_current_tx_speed_value);
+        rxSpeedText = (TextView) findViewById(R.id.id_current_rx_speed_value);
 
         View recyclerView = findViewById(R.id.item_list);
         assert recyclerView != null;
@@ -115,6 +129,10 @@ public class ItemListActivity extends AppCompatActivity implements NetworkMonito
 
         System.out.println("Rx Speed Received = " + rxValue + " " + NetworkMonitor.unitToString(rxUnit));
         System.out.println("Tx Speed Received = " + txValue + " " + NetworkMonitor.unitToString(txUnit));
+
+        /// TODO: Move this update to UI Thread to be safe
+        txSpeedText.setText(String.valueOf(txValue) + " " + NetworkMonitor.unitToString(txUnit));
+        rxSpeedText.setText(String.valueOf(rxValue) + " " + NetworkMonitor.unitToString(rxUnit));
     }
     private void setupRecyclerView(@NonNull RecyclerView recyclerView, AppContent appContent) {
         recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, appContent.ITEMS, mTwoPane));
