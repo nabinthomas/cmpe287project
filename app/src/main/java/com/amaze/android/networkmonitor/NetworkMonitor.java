@@ -6,6 +6,7 @@ import android.app.usage.NetworkStatsManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
+import android.net.TrafficStats;
 import android.os.AsyncTask;
 import android.os.RemoteException;
 
@@ -77,14 +78,19 @@ public class NetworkMonitor extends AsyncTask<NetworkMonitorEventListener, Integ
 
         this.listener = listener[0];
 
-        int i;
-
         PackageManager pkgMgr = appContext.getPackageManager();
 
-        NetworkStatsManager networkStatsManager = (NetworkStatsManager) appContext.getSystemService(Context.NETWORK_STATS_SERVICE);
+        NetworkStatsManager networkStatsManager = (NetworkStatsManager) appContext.getApplicationContext().getSystemService(Context.NETWORK_STATS_SERVICE);
 
-        for (i = 0; i < 100; i++) {
+        long startTime = System.currentTimeMillis();
+        long lastRxBytes = 0, lastTxBytes = 0;
+
+        lastRxBytes = TrafficStats.getTotalRxBytes();
+        lastTxBytes = TrafficStats.getTotalTxBytes();
+
+        while (!isCancelled()) {
             try {
+                Thread.sleep(samplingIntervalMs);
                 /*
                 long mobileWifiRx = networkStatsHelper.getAllRxBytesMobile(this) + networkStatsHelper.getAllRxBytesWifi();
                 networkStatsAllRx.setText(mobileWifiRx + " B");
@@ -92,29 +98,47 @@ public class NetworkMonitor extends AsyncTask<NetworkMonitorEventListener, Integ
                 networkStatsAllTx.setText(mobileWifiTx + " B");
                  */
                 NetworkStats.Bucket bucket = null;
+                long endTime = System.currentTimeMillis();
                 try {
                     bucket = networkStatsManager.querySummaryForDevice(ConnectivityManager.TYPE_WIFI,
                             // getSubscriberId(context, ConnectivityManager.TYPE_MOBILE),
                             "",
-                            0, //System.currentTimeMillis() - samplingIntervalMs,
-                            System.currentTimeMillis());
+                            startTime,
+                            endTime);
+
                 } catch (RemoteException e) {
                     System.out.println("Failed + " + e.toString());
                 }
 
-                System.out.println("RxBytes = " + bucket.getRxBytes());
-                System.out.println("TxBytes = " + bucket.getTxBytes());
-                Thread.sleep(samplingIntervalMs);
+                // System.out.println("RxBytes = " + bucket.getRxBytes());
+                // System.out.println("TxBytes = " + bucket.getTxBytes());
+
+
+
+                long currentRxBytes = TrafficStats.getTotalRxBytes();
+                long currentTxBytes = TrafficStats.getTotalTxBytes();
+
+                float currentRxSpeed = 1.0f * (currentRxBytes - lastRxBytes) / ((endTime - startTime)/1000);
+                float currentTxSpeed = 1.0f * (currentTxBytes - lastTxBytes) / ((endTime - startTime)/1000);
+
+                System.out.println("TrafficStats : RxTotal = " + currentRxBytes +
+                        ", TxTotal = " + currentTxBytes + ", " +
+                        " Last = (" + lastRxBytes + ", " + lastTxBytes + ")" +
+                        " Diff = (" + (currentRxBytes - lastRxBytes) + ", " + (currentTxBytes - lastTxBytes) + ")" +
+                        " Time Duration = " + (endTime - startTime));
+                if (this.listener != null) {
+                    this.listener.handleReportSpeed((long)currentRxSpeed, NetworkMonitor.Unit.bytesPerSec,
+                            (long)currentTxSpeed, Unit.bytesPerSec);
+                }
+                lastRxBytes = currentRxBytes;
+                lastTxBytes = currentTxBytes;
+                startTime = endTime;
+                if (isCancelled()) break;
             }
             catch (Exception e) {
                 // Ignore
             }
-            publishProgress(i);
-            if (this.listener != null) {
-                this.listener.handleReportSpeed(i, NetworkMonitor.Unit.bytesPerSec,
-                                                100-i, Unit.bytesPerSec);
-            }
-            if (isCancelled()) break;
+
         }
         return Long.parseLong("0");
     }

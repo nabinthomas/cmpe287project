@@ -120,7 +120,7 @@ public class ItemListActivity extends AppCompatActivity implements NetworkMonito
         System.out.println("onPause...");
         super.onPause();
         if (null != networkMonitor) {
-            networkMonitor.cancel(true);
+            // networkMonitor.cancel(true);
             networkMonitor = null;
         }
     }
