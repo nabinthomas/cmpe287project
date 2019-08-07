@@ -109,8 +109,6 @@ public class ItemListActivity extends AppCompatActivity implements NetworkMonito
         if (null == networkMonitor) {
             networkMonitor = new NetworkMonitor();
             networkMonitor.init(this.getApplicationContext());
-        }
-        if (null != networkMonitor) {
             networkMonitor.execute(this);
         }
     }
@@ -121,7 +119,7 @@ public class ItemListActivity extends AppCompatActivity implements NetworkMonito
         super.onPause();
         if (null != networkMonitor) {
             // networkMonitor.cancel(true);
-            networkMonitor = null;
+            // networkMonitor = null;
         }
     }
 
