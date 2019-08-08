@@ -1,6 +1,5 @@
 package com.amaze.android.networkmonitor;
 
-import android.app.Activity;
 import android.app.AppOpsManager;
 import android.content.Context;
 import android.content.Intent;
@@ -13,9 +12,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
 import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,14 +21,9 @@ import android.widget.TextView;
 //import com.amaze.android.networkmonitor.dummy.DummyContent;
 
 import java.util.List;
-import android.app.AppOpsManager;
-import android.content.Context;
-import android.content.Intent;
-import android.provider.Settings;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -109,6 +100,7 @@ public class ItemListActivity extends AppCompatActivity implements NetworkMonito
         if (null == networkMonitor) {
             networkMonitor = new NetworkMonitor();
             networkMonitor.init(this.getApplicationContext());
+            networkMonitor.setPackageToMonitor("com.google.android.videos");
             networkMonitor.execute(this);
         }
     }
@@ -123,8 +115,8 @@ public class ItemListActivity extends AppCompatActivity implements NetworkMonito
         }
     }
 
-    public void handleReportSpeed(long rxValue, NetworkMonitor.Unit rxUnit,
-                                  long txValue, NetworkMonitor.Unit txUnit) {
+    public void handleReportGlobalSpeed(long rxValue, NetworkMonitor.Unit rxUnit,
+                                        long txValue, NetworkMonitor.Unit txUnit) {
 
         System.out.println("Rx Speed Received = " + rxValue + " " + NetworkMonitor.unitToString(rxUnit));
         System.out.println("Tx Speed Received = " + txValue + " " + NetworkMonitor.unitToString(txUnit));
@@ -133,6 +125,11 @@ public class ItemListActivity extends AppCompatActivity implements NetworkMonito
         txSpeedText.setText(String.valueOf(txValue) + " " + NetworkMonitor.unitToString(txUnit));
         rxSpeedText.setText(String.valueOf(rxValue) + " " + NetworkMonitor.unitToString(rxUnit));
     }
+
+    public void handleReportAppBytesTransferred(String packageName, long rxValue, long txValue, NetworkMonitor.Unit unit, int networkType) {
+        // This screen is not tracking per App data. So ignore this callback
+    }
+
     private void setupRecyclerView(@NonNull RecyclerView recyclerView, AppContent appContent) {
         recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, appContent.ITEMS, mTwoPane));
     }
@@ -228,6 +225,13 @@ public class ItemListActivity extends AppCompatActivity implements NetworkMonito
             int i = 1;
             for (PackageInfo packageInfo : packages) {
                 addItem(createAppItem(i++, packageInfo.packageName, packageInfo.versionName));
+                try {
+                    System.out.println("Package  (" + i + ") = " + packageInfo.packageName + " Name = " +
+                            pm.getApplicationLabel(pm.getApplicationInfo(packageInfo.packageName, PackageManager.GET_META_DATA)).toString());
+                }
+                catch (Exception e){
+
+                }
             }
         }
 

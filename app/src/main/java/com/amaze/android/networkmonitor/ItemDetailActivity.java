@@ -1,6 +1,7 @@
 package com.amaze.android.networkmonitor;
 
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -33,7 +34,13 @@ import androidx.core.app.NotificationCompat;
  * item details are presented side-by-side with a list of items
  * in a {@link ItemListActivity}.
  */
-public class ItemDetailActivity extends AppCompatActivity {
+public class ItemDetailActivity extends AppCompatActivity implements NetworkMonitorEventListener {
+
+    /**
+     * Instance of the networkMonitor that is tied to this activity.
+     */
+    private NetworkMonitor networkMonitor = null;
+
 
     // @RequiresApi(api = Build.VERSION_CODES.O)
     private void notificationDialog(String app_name) {
@@ -123,5 +130,51 @@ public class ItemDetailActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume(){
+        System.out.println("OnResume...");
+        super.onResume();
+        if (null == networkMonitor) {
+            networkMonitor = new NetworkMonitor();
+            networkMonitor.init(this.getApplicationContext());
+            // TODO : Replace the name below with the package name for the app that is handled by this activity
+            networkMonitor.setPackageToMonitor("com.google.android.videos");
+            networkMonitor.execute(this);
+        }
+    }
+
+    @Override
+    protected void onPause(){
+        System.out.println("onPause...");
+        super.onPause();
+        if (null != networkMonitor) {
+            // networkMonitor.cancel(true);
+            // networkMonitor = null;
+        }
+    }
+
+    public void handleReportGlobalSpeed(long rxValue, NetworkMonitor.Unit rxUnit,
+                                        long txValue, NetworkMonitor.Unit txUnit) {
+
+        System.out.println("Rx Speed Received = " + rxValue + " " + NetworkMonitor.unitToString(rxUnit));
+        System.out.println("Tx Speed Received = " + txValue + " " + NetworkMonitor.unitToString(txUnit));
+
+
+    }
+
+    public void handleReportAppBytesTransferred(String packageName, long rxValue, long txValue, NetworkMonitor.Unit unit, int networkType) {
+        // TODO: Show the data on this activity.
+        System.out.print("App Package Name: " + packageName);
+        switch(networkType) {
+            case ConnectivityManager.TYPE_WIFI:
+                System.out.println("Wifi usage (Rx,Tx) = (" + rxValue + NetworkMonitor.unitToString(unit) + "," + txValue + NetworkMonitor.unitToString(unit) + ")");
+                break;
+            case ConnectivityManager.TYPE_MOBILE:
+                System.out.println("Mobile usage (Rx,Tx) = (" + rxValue + NetworkMonitor.unitToString(unit) + "," + txValue + NetworkMonitor.unitToString(unit) + ")");
+                break;
+        }
+        System.out.println("");
     }
 }
