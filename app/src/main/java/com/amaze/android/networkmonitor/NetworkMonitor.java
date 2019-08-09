@@ -32,7 +32,8 @@ public class NetworkMonitor extends AsyncTask<NetworkMonitorEventListener, Integ
         bytes,
         kiloBytes,
         megaBytes,
-        teraBytes
+        teraBytes,
+        UnknownUnit
     };
 
     Context appContext = null;
@@ -246,6 +247,13 @@ public class NetworkMonitor extends AsyncTask<NetworkMonitorEventListener, Integ
             thisInstance = new NetworkMonitor();
             thisInstance.init(context);
             thisInstance.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
+
+            System.out.println("Formatted : " + getFormattedSpeed(101, Unit.bytesPerSec));
+            System.out.println("Formatted : " + getFormattedSpeed(1001, Unit.bytesPerSec));
+            System.out.println("Formatted : " + getFormattedSpeed(1000001, Unit.bytesPerSec));
+            System.out.println("Formatted : " + getFormattedSpeed(1000000001, Unit.bytesPerSec));
+            try { Thread.sleep(5000); }
+            catch (Exception e) {}
         }
         return thisInstance;
     }
@@ -264,9 +272,43 @@ public class NetworkMonitor extends AsyncTask<NetworkMonitorEventListener, Integ
         listenerSet.remove(listener);
     }
 
+    public static Unit getHigherUnit(Unit unit) {
+        Unit newUnit = unit;
+        switch (unit) {
+            case bytes:
+                newUnit = Unit.kiloBytes;
+                break;
+            case kiloBytes:
+                newUnit = Unit.megaBytes;
+                break;
+            case megaBytes:
+                newUnit = Unit.teraBytes;
+                break;
+            case bytesPerSec:
+                newUnit = Unit.kiloBytesPerSec;
+                break;
+            case kiloBytesPerSec:
+                newUnit = Unit.megaBytesPerSec;
+                break;
+            case megaBytesPerSec:
+                newUnit = Unit.teraBytesPerSec;
+                break;
+            default:
+                newUnit = unit;
+                break;
+        }
+        return newUnit;
+    }
     public static String getFormattedSpeed(long value, Unit unit) {
         Unit newUnit = unit;
-        // while (value >= 1000 &&  )
-        return "";
+
+
+        while (value >= 1000 && (getHigherUnit(newUnit) != newUnit)) {
+            value = value / 1000;
+            newUnit = getHigherUnit(newUnit);
+        }
+
+
+        return String.valueOf(value) + " " + unitToString(newUnit);
     }
 }

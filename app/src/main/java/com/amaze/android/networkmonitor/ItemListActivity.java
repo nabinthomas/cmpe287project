@@ -129,8 +129,8 @@ public class ItemListActivity extends AppCompatActivity implements NetworkMonito
         System.out.println("Tx Speed Received = " + txValue + " " + NetworkMonitor.unitToString(txUnit));
 
         /// TODO: Move this update to UI Thread to be safe
-        txSpeedText.setText(String.valueOf(txValue) + " " + NetworkMonitor.unitToString(txUnit));
-        rxSpeedText.setText(String.valueOf(rxValue) + " " + NetworkMonitor.unitToString(rxUnit));
+        txSpeedText.setText(NetworkMonitor.getFormattedSpeed(txValue, txUnit));
+        rxSpeedText.setText(NetworkMonitor.getFormattedSpeed(rxValue, rxUnit));
     }
 
     public void handleReportAppBytesTransferred(String packageName, long rxValue, long txValue, NetworkMonitor.Unit unit, int networkType) {
