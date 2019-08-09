@@ -73,6 +73,7 @@ public class NetworkMonitor extends AsyncTask<NetworkMonitorEventListener, Integ
      */
     public boolean setPackageToMonitor(String packageName) {
 
+
         mPackageToMonitor = packageName;
 
         return true;
@@ -214,6 +215,12 @@ public class NetworkMonitor extends AsyncTask<NetworkMonitorEventListener, Integ
             System.out.println("Not enough permission  : " + e.toString() );
         }
 
+        return "";
+    }
+
+    public static String getFormattedSpeed(long value, Unit unit) {
+        Unit newUnit = unit;
+        // while (value >= 1000 &&  )
         return "";
     }
 }

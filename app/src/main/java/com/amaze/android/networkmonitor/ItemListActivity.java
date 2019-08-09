@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -100,7 +101,7 @@ public class ItemListActivity extends AppCompatActivity implements NetworkMonito
         if (null == networkMonitor) {
             networkMonitor = new NetworkMonitor();
             networkMonitor.init(this.getApplicationContext());
-            networkMonitor.execute(this);
+            networkMonitor.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, this);
         }
     }
 
@@ -109,8 +110,8 @@ public class ItemListActivity extends AppCompatActivity implements NetworkMonito
         System.out.println("onPause...");
         super.onPause();
         if (null != networkMonitor) {
-            // networkMonitor.cancel(true);
-            // networkMonitor = null;
+            networkMonitor.cancel(true);
+            networkMonitor = null;
         }
     }
 
