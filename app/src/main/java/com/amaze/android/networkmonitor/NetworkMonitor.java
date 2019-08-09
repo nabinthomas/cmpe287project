@@ -10,6 +10,7 @@ import android.net.TrafficStats;
 import android.os.AsyncTask;
 import android.telephony.TelephonyManager;
 
+import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -301,14 +302,16 @@ public class NetworkMonitor extends AsyncTask<NetworkMonitorEventListener, Integ
     }
     public static String getFormattedSpeed(long value, Unit unit) {
         Unit newUnit = unit;
+        double convertedValue = value;
 
 
-        while (value >= 1000 && (getHigherUnit(newUnit) != newUnit)) {
-            value = value / 1000;
+        while (convertedValue >= 1024 && (getHigherUnit(newUnit) != newUnit)) {
+            convertedValue = convertedValue / 1024;
             newUnit = getHigherUnit(newUnit);
         }
 
+        DecimalFormat df = new DecimalFormat("#.#");
 
-        return String.valueOf(value) + " " + unitToString(newUnit);
+        return df.format(convertedValue) + " " + unitToString(newUnit);
     }
 }
