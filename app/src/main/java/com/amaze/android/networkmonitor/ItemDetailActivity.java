@@ -171,13 +171,11 @@ public class ItemDetailActivity extends AppCompatActivity implements NetworkMoni
     protected void onResume(){
         System.out.println("OnResume Detail...");
         super.onResume();
-        if (null == networkMonitor) {
-            networkMonitor = new NetworkMonitor();
-            networkMonitor.init(this.getApplicationContext());
-            // TODO : Replace the name below with the package name for the app that is handled by this activity
-            networkMonitor.setPackageToMonitor("com.google.android.videos");
-            networkMonitor.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, this);
-        }
+        networkMonitor = NetworkMonitor.Instance(this.getApplicationContext());
+        // TODO : Replace the name below with the package name for the app that is handled by this activity
+        networkMonitor.setPackageToMonitor("com.google.android.videos");
+        networkMonitor.addListener(this);
+
     }
 
     @Override
@@ -185,8 +183,8 @@ public class ItemDetailActivity extends AppCompatActivity implements NetworkMoni
         System.out.println("onPause...");
         super.onPause();
         if (null != networkMonitor) {
-            networkMonitor.cancel(true);
-            networkMonitor = null;
+            networkMonitor.setPackageToMonitor(null);
+            networkMonitor.removeListener(this);
         }
     }
 

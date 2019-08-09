@@ -99,9 +99,9 @@ public class ItemListActivity extends AppCompatActivity implements NetworkMonito
         System.out.println("OnResume...");
         super.onResume();
         if (null == networkMonitor) {
-            networkMonitor = new NetworkMonitor();
-            networkMonitor.init(this.getApplicationContext());
-            networkMonitor.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, this);
+            networkMonitor = NetworkMonitor.Instance(this.getApplicationContext());
+            networkMonitor.addListener(this);
+
         }
     }
 
@@ -110,8 +110,10 @@ public class ItemListActivity extends AppCompatActivity implements NetworkMonito
         System.out.println("onPause...");
         super.onPause();
         if (null != networkMonitor) {
-            networkMonitor.cancel(true);
-            networkMonitor = null;
+            // Keep monitoring on moving away from this screen too.
+            networkMonitor.removeListener(this);
+            // networkMonitor.cancel(true);
+            // networkMonitor = null;
         }
     }
 

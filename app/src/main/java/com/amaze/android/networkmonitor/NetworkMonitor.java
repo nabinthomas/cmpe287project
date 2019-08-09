@@ -10,6 +10,10 @@ import android.net.TrafficStats;
 import android.os.AsyncTask;
 import android.telephony.TelephonyManager;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
 interface NetworkMonitorEventListener {
 
     public void handleReportGlobalSpeed(long rxValue, NetworkMonitor.Unit rxUnit,
@@ -31,11 +35,11 @@ public class NetworkMonitor extends AsyncTask<NetworkMonitorEventListener, Integ
         teraBytes
     };
 
-    NetworkMonitorEventListener listener = null;
-
     Context appContext = null;
 
     String mPackageToMonitor = null;
+
+    protected static NetworkMonitor thisInstance = null;
 
     /**
      *  Sampling interval. Default is 5 sec.
@@ -85,8 +89,6 @@ public class NetworkMonitor extends AsyncTask<NetworkMonitorEventListener, Integ
 
     protected Long doInBackground(NetworkMonitorEventListener... listener) {
 
-        this.listener = listener[0];
-
         long startTime = System.currentTimeMillis();
         long endTime = 0;
         long lastRxBytes = 0, lastTxBytes = 0;
@@ -110,9 +112,12 @@ public class NetworkMonitor extends AsyncTask<NetworkMonitorEventListener, Integ
                         " Last = (" + lastRxBytes + ", " + lastTxBytes + ")" +
                         " Diff = (" + (currentRxBytes - lastRxBytes) + ", " + (currentTxBytes - lastTxBytes) + ")" +
                         " Time Duration = " + (endTime - startTime));
-                if (this.listener != null) {
 
-                    this.listener.handleReportGlobalSpeed((long)currentRxSpeed, NetworkMonitor.Unit.bytesPerSec,
+                Iterator<NetworkMonitorEventListener> it = listenerSet.iterator();
+                while(((Iterator) it).hasNext()) {
+
+                    NetworkMonitorEventListener callbackListener = (NetworkMonitorEventListener) it.next();
+                    callbackListener.handleReportGlobalSpeed((long)currentRxSpeed, NetworkMonitor.Unit.bytesPerSec,
                             (long)currentTxSpeed, Unit.bytesPerSec);
                 }
                 if (isCancelled()) break;
@@ -184,8 +189,14 @@ public class NetworkMonitor extends AsyncTask<NetworkMonitorEventListener, Integ
         }
         networkStats.close();
 
-        this.listener.handleReportAppBytesTransferred(mPackageToMonitor, rxBytesMobile, txBytesMobile, Unit.bytes, ConnectivityManager.TYPE_MOBILE);
-        this.listener.handleReportAppBytesTransferred(mPackageToMonitor, rxBytesWifi, txBytesWifi, Unit.bytes, ConnectivityManager.TYPE_WIFI);
+        Iterator<NetworkMonitorEventListener> it = listenerSet.iterator();
+        while(((Iterator) it).hasNext()) {
+
+            NetworkMonitorEventListener callbackListener = (NetworkMonitorEventListener) it.next();
+            callbackListener.handleReportAppBytesTransferred(mPackageToMonitor, rxBytesMobile, txBytesMobile, Unit.bytes, ConnectivityManager.TYPE_MOBILE);
+            callbackListener.handleReportAppBytesTransferred(mPackageToMonitor, rxBytesWifi, txBytesWifi, Unit.bytes, ConnectivityManager.TYPE_WIFI);
+        }
+
         System.out.println("Package " + mPackageToMonitor +
                 " : Wifi(rx, tx) = (" + rxBytesWifi + "," + txBytesWifi + ")" +
                 " : Mobile (rx, tx) = ( " + rxBytesMobile + "," +  txBytesMobile + ")");
@@ -216,6 +227,29 @@ public class NetworkMonitor extends AsyncTask<NetworkMonitorEventListener, Integ
         }
 
         return "";
+    }
+
+    public static NetworkMonitor Instance(Context context) {
+        if (thisInstance == null) {
+            thisInstance = new NetworkMonitor();
+            thisInstance.init(context);
+            thisInstance.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
+        }
+        return thisInstance;
+    }
+
+    Set<NetworkMonitorEventListener> listenerSet;
+
+    protected NetworkMonitor() {
+        listenerSet = new HashSet<NetworkMonitorEventListener>();
+    }
+
+    public void addListener(NetworkMonitorEventListener listener) {
+        listenerSet.add(listener);
+    }
+
+    public void removeListener(NetworkMonitorEventListener listener) {
+        listenerSet.remove(listener);
     }
 
     public static String getFormattedSpeed(long value, Unit unit) {
