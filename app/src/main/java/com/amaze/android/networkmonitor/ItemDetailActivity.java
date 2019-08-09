@@ -184,8 +184,8 @@ public class ItemDetailActivity extends AppCompatActivity implements NetworkMoni
         System.out.println("onPause...");
         super.onPause();
         if (null != networkMonitor) {
-            // networkMonitor.cancel(true);
-            // networkMonitor = null;
+            networkMonitor.cancel(true);
+            networkMonitor = null;
         }
     }
 
