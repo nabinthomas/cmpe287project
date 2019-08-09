@@ -73,6 +73,7 @@ public class NetworkMonitor extends AsyncTask<NetworkMonitorEventListener, Integ
      */
     public boolean setPackageToMonitor(String packageName) {
 
+
         mPackageToMonitor = packageName;
 
         return true;
@@ -146,7 +147,7 @@ public class NetworkMonitor extends AsyncTask<NetworkMonitorEventListener, Integ
             return;
         }
         NetworkStats networkStats = null;
-        NetworkStatsManager networkStatsManager = (NetworkStatsManager) appContext.getApplicationContext().getSystemService(Context.NETWORK_STATS_SERVICE);
+        NetworkStatsManager networkStatsManager = (NetworkStatsManager) appContext.getSystemService(Context.NETWORK_STATS_SERVICE);
 
         networkStats = networkStatsManager.queryDetailsForUid(
                 ConnectivityManager.TYPE_WIFI,
@@ -163,6 +164,8 @@ public class NetworkMonitor extends AsyncTask<NetworkMonitorEventListener, Integ
             txBytesWifi += packageBucket.getTxBytes();
         }
         networkStats.close();
+
+        // System.out.println("TrafficStats.getUidTxBytes(uid) " + TrafficStats.getUidTxBytes(uid));
 
         networkStats = networkStatsManager.queryDetailsForUid(
                 ConnectivityManager.TYPE_MOBILE,
@@ -212,6 +215,12 @@ public class NetworkMonitor extends AsyncTask<NetworkMonitorEventListener, Integ
             System.out.println("Not enough permission  : " + e.toString() );
         }
 
+        return "";
+    }
+
+    public static String getFormattedSpeed(long value, Unit unit) {
+        Unit newUnit = unit;
+        // while (value >= 1000 &&  )
         return "";
     }
 }

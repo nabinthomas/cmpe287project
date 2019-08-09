@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -168,14 +169,14 @@ public class ItemDetailActivity extends AppCompatActivity implements NetworkMoni
 
     @Override
     protected void onResume(){
-        System.out.println("OnResume...");
+        System.out.println("OnResume Detail...");
         super.onResume();
         if (null == networkMonitor) {
             networkMonitor = new NetworkMonitor();
             networkMonitor.init(this.getApplicationContext());
             // TODO : Replace the name below with the package name for the app that is handled by this activity
             networkMonitor.setPackageToMonitor("com.google.android.videos");
-            networkMonitor.execute(this);
+            networkMonitor.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, this);
         }
     }
 
@@ -184,17 +185,14 @@ public class ItemDetailActivity extends AppCompatActivity implements NetworkMoni
         System.out.println("onPause...");
         super.onPause();
         if (null != networkMonitor) {
-            // networkMonitor.cancel(true);
-            // networkMonitor = null;
+            networkMonitor.cancel(true);
+            networkMonitor = null;
         }
     }
 
     public void handleReportGlobalSpeed(long rxValue, NetworkMonitor.Unit rxUnit,
                                         long txValue, NetworkMonitor.Unit txUnit) {
-
-        System.out.println("Rx Speed Received = " + rxValue + " " + NetworkMonitor.unitToString(rxUnit));
-        System.out.println("Tx Speed Received = " + txValue + " " + NetworkMonitor.unitToString(txUnit));
-
+        // This screen does not need to monitor global speed. So ignore this
 
     }
 
