@@ -100,7 +100,6 @@ public class ItemListActivity extends AppCompatActivity implements NetworkMonito
         if (null == networkMonitor) {
             networkMonitor = new NetworkMonitor();
             networkMonitor.init(this.getApplicationContext());
-            networkMonitor.setPackageToMonitor("com.google.android.videos");
             networkMonitor.execute(this);
         }
     }

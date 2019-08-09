@@ -146,7 +146,7 @@ public class NetworkMonitor extends AsyncTask<NetworkMonitorEventListener, Integ
             return;
         }
         NetworkStats networkStats = null;
-        NetworkStatsManager networkStatsManager = (NetworkStatsManager) appContext.getApplicationContext().getSystemService(Context.NETWORK_STATS_SERVICE);
+        NetworkStatsManager networkStatsManager = (NetworkStatsManager) appContext.getSystemService(Context.NETWORK_STATS_SERVICE);
 
         networkStats = networkStatsManager.queryDetailsForUid(
                 ConnectivityManager.TYPE_WIFI,
@@ -163,6 +163,8 @@ public class NetworkMonitor extends AsyncTask<NetworkMonitorEventListener, Integ
             txBytesWifi += packageBucket.getTxBytes();
         }
         networkStats.close();
+
+        // System.out.println("TrafficStats.getUidTxBytes(uid) " + TrafficStats.getUidTxBytes(uid));
 
         networkStats = networkStatsManager.queryDetailsForUid(
                 ConnectivityManager.TYPE_MOBILE,

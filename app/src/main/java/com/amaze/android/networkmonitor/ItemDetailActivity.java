@@ -172,7 +172,7 @@ public class ItemDetailActivity extends AppCompatActivity implements NetworkMoni
         super.onResume();
         if (null == networkMonitor) {
             networkMonitor = new NetworkMonitor();
-            networkMonitor.init(this.getApplicationContext());
+            networkMonitor.init(this);//.getApplicationContext());
             // TODO : Replace the name below with the package name for the app that is handled by this activity
             networkMonitor.setPackageToMonitor("com.google.android.videos");
             networkMonitor.execute(this);
