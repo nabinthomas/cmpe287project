@@ -62,8 +62,20 @@ public class NetworkMonitor extends AsyncTask<NetworkMonitorEventListener, Integ
             case teraBytesPerSec:
                 units = "TB/s";
                 break;
+            case bytes:
+                units = "B";
+                break;
+            case kiloBytes:
+                units = "KB";
+                break;
+            case megaBytes:
+                units = "MB";
+                break;
+            case teraBytes:
+                units = "TB";
+                break;
             default:
-                units = "Unknown";
+                units = "??";
                 break;
         }
         return units;
