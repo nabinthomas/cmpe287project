@@ -38,8 +38,6 @@ public class AppContent  {
 
     private AppContent( Context context)  {
 
-      // Applicationinfo ai =  getApplicationInfo ();
-      // PackageManager pm = getApplicationContext().getPackageManager();
         PackageManager pm =   context.getPackageManager();
         List<PackageInfo> packages = pm.getInstalledPackages(0);
 
@@ -56,7 +54,7 @@ public class AppContent  {
                 System.out.println("Exception Package  (" + i + ") = " + packageInfo.packageName + " Name = " +name);
 
             }
-            //BINU
+
             addItem(createAppItem(i++, name, packageInfo.versionName));
         }
     }
@@ -70,32 +68,49 @@ public class AppContent  {
         return new AppItem(String.valueOf(position), packageName, versionName);
     }
 
-    private String makeDetails(int position) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Sans Detailed Stat for App #: ").append(position);
-        for (int i = 0; i < position; i++) {
-            builder.append("\nSans More details information here.");
-        }
-        return builder.toString();
-    }
-
     /**
      * A App item representing a piece of content.
      */
     public class AppItem {
         public final String id;
-        public final String content;
-        public final String details;
+        //public final String content;
+        //public final String details;
 
-        public AppItem(String id, String content, String details) {
+        public final String appName;
+        public final String appPkg;
+
+        long TrafficPkgRx;
+        long TrafficPkgTx;
+        long TrafficRx;
+        long TrafficTx;
+
+        long NetSatsPkgRx;
+        long NetSatsPkgTx;
+        long NetSatsRx;
+        long NetSatsTx;
+
+
+
+
+        public AppItem(String id, String name, String pkg) {
             this.id = id;
-            this.content = content;
-            this.details = details;
+            this.appName = name;
+            this.appPkg = pkg;
+
+            this.TrafficPkgRx = 0 ;
+            this.TrafficPkgTx = 0 ;
+            this.TrafficRx = 0 ;
+            this.TrafficTx = 0 ;
+
+            this. NetSatsPkgRx = 0 ;
+            this. NetSatsPkgTx = 0 ;
+            this.NetSatsRx = 0 ;
+            this.NetSatsTx = 0 ;;
         }
 
         @Override
         public String toString() {
-            return content;
+            return appName ;//+ "TrafficPkgRx:"+ TrafficPkgRx + "  TrafficPkgTx" +TrafficPkgTx;
         }
     }
 }
