@@ -248,13 +248,6 @@ public class NetworkMonitor extends AsyncTask<NetworkMonitorEventListener, Integ
             thisInstance = new NetworkMonitor();
             thisInstance.init(context);
             thisInstance.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
-
-            System.out.println("Formatted : " + getFormattedSpeed(101, Unit.bytesPerSec));
-            System.out.println("Formatted : " + getFormattedSpeed(1001, Unit.bytesPerSec));
-            System.out.println("Formatted : " + getFormattedSpeed(1000001, Unit.bytesPerSec));
-            System.out.println("Formatted : " + getFormattedSpeed(1000000001, Unit.bytesPerSec));
-            try { Thread.sleep(5000); }
-            catch (Exception e) {}
         }
         return thisInstance;
     }
