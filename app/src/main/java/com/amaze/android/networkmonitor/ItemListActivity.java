@@ -117,8 +117,7 @@ public class ItemListActivity extends AppCompatActivity implements NetworkMonito
         super.onPause();
         if (null != networkMonitor) {
             // Keep monitoring on moving away from this screen too.
-            networkMonitor.removeListener(this);
-            // networkMonitor.cancel(true);
+            // networkMonitor.removeListener(this);
             // networkMonitor = null;
         }
     }
