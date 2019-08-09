@@ -1,6 +1,8 @@
 package com.amaze.android.networkmonitor;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 
@@ -13,6 +15,7 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.ActionBar;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NavUtils;
 
 import android.view.MenuItem;
@@ -26,6 +29,7 @@ import android.annotation.SuppressLint;
 import android.graphics.Color;
 //import android.support.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 
 
 /**
@@ -41,6 +45,7 @@ public class ItemDetailActivity extends AppCompatActivity implements NetworkMoni
      */
     private NetworkMonitor networkMonitor = null;
 
+    static final int PERMISSION_TYPE_READ_PHONE_STATE = 0x1;
 
     // @RequiresApi(api = Build.VERSION_CODES.O)
     private void notificationDialog(String app_name) {
@@ -112,7 +117,36 @@ public class ItemDetailActivity extends AppCompatActivity implements NetworkMoni
                     .add(R.id.item_detail_container, fragment)
                     .commit();
         }
+
         notificationDialog(ItemDetailFragment.ARG_ITEM_ID);
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_PHONE_STATE},
+                    PERMISSION_TYPE_READ_PHONE_STATE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_TYPE_READ_PHONE_STATE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+        }
     }
 
     @Override
