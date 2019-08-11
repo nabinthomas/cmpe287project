@@ -48,24 +48,26 @@ public class AppContent  {
             String name = "" ;
             try {
                 name =  pm.getApplicationLabel(pm.getApplicationInfo(packageInfo.packageName, PackageManager.GET_META_DATA)).toString();
-
+                AppItem tempAppItem = createAppItem(i++, name, packageInfo.packageName);
+                addItem(tempAppItem);
             }
             catch (Exception e){
                 System.out.println("Exception Package  (" + i + ") = " + packageInfo.packageName + " Name = " +name);
 
             }
 
-            addItem(createAppItem(i++, name, packageInfo.versionName));
         }
     }
 
     private void addItem(AppItem item) {
         ITEMS.add(item);
         ITEM_MAP.put(item.id, item);
+        //ITEM_MAP.put(item.appPkg, item);
     }
 
-    private AppItem createAppItem(int position, String packageName, String versionName) {
-        return new AppItem(String.valueOf(position), packageName, versionName);
+    private AppItem createAppItem(int position, String  Name, String packageName) {
+        System.out.println("BINU  AppaItem    "+ packageName   );
+        return new AppItem(String.valueOf(position),  Name, packageName);
     }
 
     /**
@@ -110,7 +112,7 @@ public class AppContent  {
 
         @Override
         public String toString() {
-            return appName ;//+ "TrafficPkgRx:"+ TrafficPkgRx + "  TrafficPkgTx" +TrafficPkgTx;
+            return appName ;//+ "TrafficRx:"+ TrafficRx + "  TrafficTx" +TrafficTx;
         }
     }
 }

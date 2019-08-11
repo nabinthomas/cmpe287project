@@ -46,6 +46,11 @@ public class ItemDetailActivity extends AppCompatActivity implements NetworkMoni
      */
     private NetworkMonitor networkMonitor = null;
 
+    /**
+     * Instance of the AppContent
+     */
+
+    private  AppContent appContent = null;
     static final int PERMISSION_TYPE_READ_PHONE_STATE = 0x1;
 
     // @RequiresApi(api = Build.VERSION_CODES.O)
@@ -152,6 +157,7 @@ public class ItemDetailActivity extends AppCompatActivity implements NetworkMoni
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        System.out.println("BINU onOptionsItemSelected " +item.toString());
         int id = item.getItemId();
         if (id == android.R.id.home) {
             // This ID represents the Home or Up button. In the case of this
@@ -164,16 +170,28 @@ public class ItemDetailActivity extends AppCompatActivity implements NetworkMoni
             NavUtils.navigateUpTo(this, new Intent(this, ItemListActivity.class));
             return true;
         }
+        else {
+            AppContent.AppItem mItem = appContent.ITEM_MAP.get(item.getItemId());
+            System.out.println("BINU onOptionsItemSelected " + mItem.appPkg);
+        }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     protected void onResume(){
+
+        Context context = this.getApplicationContext() ;
         System.out.println("OnResume Detail...");
         super.onResume();
-        networkMonitor = NetworkMonitor.Instance(this.getApplicationContext());
+        networkMonitor = NetworkMonitor.Instance(context);
+        appContent = AppContent.getInstance(context);
+
+
+        //System.out.println("BINU OnResume " + getArguments().getString(ARG_ITEM_ID));
+        //mItem = appContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
+
         // TODO : Replace the name below with the package name for the app that is handled by this activity
-        networkMonitor.setPackageToMonitor("com.google.android.videos");
+        //
         networkMonitor.addListener(this);
 
     }
@@ -196,7 +214,7 @@ public class ItemDetailActivity extends AppCompatActivity implements NetworkMoni
 
     public void handleReportAppBytesTransferred(String packageName, long rxValue, long txValue, NetworkMonitor.Unit unit, int networkType) {
         // TODO: Show the data on this activity.
-        System.out.print("App Package Name: " + packageName);
+        System.out.print("App Package Name: " + packageName + " : ");
         switch(networkType) {
             case ConnectivityManager.TYPE_WIFI:
                 System.out.println("Wifi usage (Rx,Tx) = (" + rxValue + NetworkMonitor.unitToString(unit) + "," + txValue + NetworkMonitor.unitToString(unit) + ")");
@@ -206,5 +224,22 @@ public class ItemDetailActivity extends AppCompatActivity implements NetworkMoni
                 break;
         }
         System.out.println("");
+
+        try {
+            AppContent.AppItem tempItem = appContent.ITEM_MAP.get(packageName);
+            tempItem.TrafficRx = rxValue;
+            tempItem.TrafficTx = txValue;
+
+            System.out.println("BINU   tempItem.TrafficRx  for package  "+ packageName+ " is "  +  tempItem.TrafficRx  );
+        }
+        catch (Exception e)
+        {
+            //Do some thing later
+
+            System.out.println("BINU  Error No Package   " +  packageName);
+        }
+
+
+
     }
 }

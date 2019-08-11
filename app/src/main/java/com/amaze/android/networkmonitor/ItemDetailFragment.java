@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-//import com.amaze.android.networkmonitor.dummy.DummyContent;
+
 /**
  * A fragment representing a single Item detail screen.
  * This fragment is either contained in a {@link ItemListActivity}
@@ -26,6 +26,11 @@ public class ItemDetailFragment extends Fragment {
      */
 
     private AppContent appContent = null;
+
+    /**
+     * Instance of the networkMonitor that is tied to this activity.
+     */
+    private NetworkMonitor networkMonitor = null;
 
     /**
      * The fragment argument representing the item ID that this fragment
@@ -52,14 +57,18 @@ public class ItemDetailFragment extends Fragment {
         if (getArguments().containsKey(ARG_ITEM_ID)) {
 
             Activity activity = this.getActivity();
+            networkMonitor = NetworkMonitor.Instance(activity);
             appContent = AppContent.getInstance(activity);
 
             mItem = appContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
+            networkMonitor.setPackageToMonitor(mItem.appPkg);
+            System.out.println("BINU Setting monitor to  " + mItem.appPkg  );
 
 
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {
-                appBarLayout.setTitle(mItem.appName);
+                String fullName  =  mItem.appPkg;
+                appBarLayout.setTitle(fullName);
             }
         }
     }
