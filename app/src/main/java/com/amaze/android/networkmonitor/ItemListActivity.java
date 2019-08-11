@@ -18,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-//import com.amaze.android.networkmonitor.dummy.DummyContent;
 
 import java.util.List;
 

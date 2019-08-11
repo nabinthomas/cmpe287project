@@ -81,17 +81,11 @@ public class AppContent  {
         public final String appName;
         public final String appPkg;
 
-        long TrafficPkgRx;
-        long TrafficPkgTx;
+
         long TrafficRx;
         long TrafficTx;
-
-        long NetSatsPkgRx;
-        long NetSatsPkgTx;
-        long NetSatsRx;
-        long NetSatsTx;
-
-
+        long TrafficMobRx;
+        long TrafficMobTx;
 
 
         public AppItem(String id, String name, String pkg) {
@@ -99,15 +93,11 @@ public class AppContent  {
             this.appName = name;
             this.appPkg = pkg;
 
-            this.TrafficPkgRx = 0 ;
-            this.TrafficPkgTx = 0 ;
+            this.TrafficMobRx = 0 ;
+            this.TrafficMobTx = 0 ;
             this.TrafficRx = 0 ;
             this.TrafficTx = 0 ;
 
-            this. NetSatsPkgRx = 0 ;
-            this. NetSatsPkgTx = 0 ;
-            this.NetSatsRx = 0 ;
-            this.NetSatsTx = 0 ;;
         }
 
         @Override

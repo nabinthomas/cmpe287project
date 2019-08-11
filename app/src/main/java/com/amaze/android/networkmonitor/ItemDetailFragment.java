@@ -69,7 +69,7 @@ public class ItemDetailFragment extends Fragment implements NetworkMonitorEventL
 
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {
-                String fullName  =  mItem.appPkg;
+                String fullName  =  mItem.appName;
                 appBarLayout.setTitle(fullName);
             }
         }
@@ -82,7 +82,13 @@ public class ItemDetailFragment extends Fragment implements NetworkMonitorEventL
 
         // Show the dummy content as text in a TextView.
         if (mItem != null) {
-            String  details = mItem.appPkg + " \n " + mItem.TrafficTx + "  AN: " + mItem.appName ;
+            String  details = mItem.appPkg +
+                    "\n\nWiFi Traffic " +
+                    "\nTx = " + mItem.TrafficTx +
+                    "\nRx = " + mItem.TrafficRx +
+                    "\n\nMobile Traffic " +
+                    "\nTx = " + mItem.TrafficMobTx +
+                    "\nRx = " + mItem.TrafficMobRx ;
 
             ((TextView) rootView.findViewById(R.id.item_detail)).setText(details);
         }
@@ -100,33 +106,22 @@ public class ItemDetailFragment extends Fragment implements NetworkMonitorEventL
     public void handleReportAppBytesTransferred(String packageName, long rxValue, long txValue, NetworkMonitor.Unit unit, int networkType) {
         // TODO: Show the data on this activity.
         System.out.print("App Package Name: " + packageName + " : ");
-        switch(networkType) {
-            case ConnectivityManager.TYPE_WIFI:
-                System.out.println("Wifi usage (Rx,Tx) = (" + rxValue + NetworkMonitor.unitToString(unit) + "," + txValue + NetworkMonitor.unitToString(unit) + ")");
-                break;
-            case ConnectivityManager.TYPE_MOBILE:
-                System.out.println("Mobile usage (Rx,Tx) = (" + rxValue + NetworkMonitor.unitToString(unit) + "," + txValue + NetworkMonitor.unitToString(unit) + ")");
-                break;
-        }
-        System.out.println("");
-
-        try {
-            if (mItem != null) {
-
-                mItem.TrafficRx = rxValue;
-                mItem.TrafficTx = txValue;
+        if (mItem != null) {
+            switch (networkType) {
+                case ConnectivityManager.TYPE_WIFI:
+                    System.out.println("Wifi usage (Rx,Tx) = (" + rxValue + NetworkMonitor.unitToString(unit) + "," + txValue + NetworkMonitor.unitToString(unit) + ")");
+                    mItem.TrafficRx = rxValue;
+                    mItem.TrafficTx = txValue;
+                    break;
+                case ConnectivityManager.TYPE_MOBILE:
+                    System.out.println("Mobile usage (Rx,Tx) = (" + rxValue + NetworkMonitor.unitToString(unit) + "," + txValue + NetworkMonitor.unitToString(unit) + ")");
+                    mItem.TrafficMobRx = rxValue;
+                    mItem.TrafficMobTx = txValue;
+                    break;
             }
-
-            System.out.println("BINU   tempItem.TrafficRx  for package  "+ packageName+ " is "  +  mItem.TrafficRx  );
         }
-        catch (Exception e)
-        {
-            //Do some thing later
-
-            System.out.println("BINU  Error No Package   " +  packageName + e );
-        }
-
-
+        //TODO How  to refresh ???
+        System.out.println("");
 
     }
 }
