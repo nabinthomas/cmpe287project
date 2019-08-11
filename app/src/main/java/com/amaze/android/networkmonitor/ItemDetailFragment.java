@@ -135,15 +135,11 @@ public class ItemDetailFragment extends Fragment implements NetworkMonitorEventL
                 "\nTx = " + mItem.TrafficMobTx +
                 "\nRx = " + mItem.TrafficMobRx ;
 
-
-
         mDetailTxt.setText(details);
 
         System.out.println("Details : " + mItem.appPkg +
                 " Traffic " + ConnectivityManager.TYPE_WIFI +
                 "  Tx = " + rxValue +
                 "  Rx = " + txValue );
-
-
     }
 }

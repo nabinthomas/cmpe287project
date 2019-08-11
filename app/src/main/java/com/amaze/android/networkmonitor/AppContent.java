@@ -66,7 +66,7 @@ public class AppContent  {
     }
 
     private AppItem createAppItem(int position, String  Name, String packageName) {
-        System.out.println("BINU  AppaItem    "+ packageName   );
+        System.out.println("AppaItem    "+ packageName   );
         return new AppItem(String.valueOf(position),  Name, packageName);
     }
 
