@@ -1,6 +1,7 @@
 package com.amaze.android.networkmonitor;
 
 import android.app.Activity;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
@@ -19,7 +20,7 @@ import android.widget.TextView;
  * in two-pane mode (on tablets) or a {@link ItemDetailActivity}
  * on handsets.
  */
-public class ItemDetailFragment extends Fragment {
+public class ItemDetailFragment extends Fragment implements NetworkMonitorEventListener {
 
     /**
      * We will keep an instance of AppContent which holds the per aap details
@@ -54,6 +55,7 @@ public class ItemDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         if (getArguments().containsKey(ARG_ITEM_ID)) {
 
             Activity activity = this.getActivity();
@@ -63,7 +65,7 @@ public class ItemDetailFragment extends Fragment {
             mItem = appContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
             networkMonitor.setPackageToMonitor(mItem.appPkg);
             System.out.println("BINU Setting monitor to  " + mItem.appPkg  );
-
+            networkMonitor.addListener(this);
 
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {
@@ -80,9 +82,51 @@ public class ItemDetailFragment extends Fragment {
 
         // Show the dummy content as text in a TextView.
         if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.item_detail)).setText(mItem.appPkg);
+            String  details = mItem.appPkg + " \n " + mItem.TrafficTx + "  AN: " + mItem.appName ;
+
+            ((TextView) rootView.findViewById(R.id.item_detail)).setText(details);
         }
 
         return rootView;
+    }
+
+
+    public void handleReportGlobalSpeed(long rxValue, NetworkMonitor.Unit rxUnit,
+                                        long txValue, NetworkMonitor.Unit txUnit) {
+        // This screen does not need to monitor global speed. So ignore this
+
+    }
+
+    public void handleReportAppBytesTransferred(String packageName, long rxValue, long txValue, NetworkMonitor.Unit unit, int networkType) {
+        // TODO: Show the data on this activity.
+        System.out.print("App Package Name: " + packageName + " : ");
+        switch(networkType) {
+            case ConnectivityManager.TYPE_WIFI:
+                System.out.println("Wifi usage (Rx,Tx) = (" + rxValue + NetworkMonitor.unitToString(unit) + "," + txValue + NetworkMonitor.unitToString(unit) + ")");
+                break;
+            case ConnectivityManager.TYPE_MOBILE:
+                System.out.println("Mobile usage (Rx,Tx) = (" + rxValue + NetworkMonitor.unitToString(unit) + "," + txValue + NetworkMonitor.unitToString(unit) + ")");
+                break;
+        }
+        System.out.println("");
+
+        try {
+            if (mItem != null) {
+
+                mItem.TrafficRx = rxValue;
+                mItem.TrafficTx = txValue;
+            }
+
+            System.out.println("BINU   tempItem.TrafficRx  for package  "+ packageName+ " is "  +  mItem.TrafficRx  );
+        }
+        catch (Exception e)
+        {
+            //Do some thing later
+
+            System.out.println("BINU  Error No Package   " +  packageName + e );
+        }
+
+
+
     }
 }

@@ -39,7 +39,7 @@ import androidx.core.content.ContextCompat;
  * item details are presented side-by-side with a list of items
  * in a {@link ItemListActivity}.
  */
-public class ItemDetailActivity extends AppCompatActivity implements NetworkMonitorEventListener {
+public class ItemDetailActivity extends AppCompatActivity { //implements NetworkMonitorEventListener {
 
     /**
      * Instance of the networkMonitor that is tied to this activity.
@@ -192,7 +192,7 @@ public class ItemDetailActivity extends AppCompatActivity implements NetworkMoni
 
         // TODO : Replace the name below with the package name for the app that is handled by this activity
         //
-        networkMonitor.addListener(this);
+       // networkMonitor.addListener(this);
 
     }
 
@@ -202,9 +202,10 @@ public class ItemDetailActivity extends AppCompatActivity implements NetworkMoni
         super.onPause();
         if (null != networkMonitor) {
             networkMonitor.setPackageToMonitor(null);
-            networkMonitor.removeListener(this);
+            //BINU networkMonitor.removeListener(this);
         }
     }
+    /*
 
     public void handleReportGlobalSpeed(long rxValue, NetworkMonitor.Unit rxUnit,
                                         long txValue, NetworkMonitor.Unit txUnit) {
@@ -242,4 +243,6 @@ public class ItemDetailActivity extends AppCompatActivity implements NetworkMoni
 
 
     }
+    */
+
 }
