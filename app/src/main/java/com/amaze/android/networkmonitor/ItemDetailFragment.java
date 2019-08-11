@@ -23,6 +23,10 @@ import android.widget.TextView;
 public class ItemDetailFragment extends Fragment implements NetworkMonitorEventListener {
 
     /**
+     * Reference to the textview which shows thedetail
+     */
+    private TextView mDetailTxt = null;
+    /**
      * We will keep an instance of AppContent which holds the per aap details
      */
 
@@ -64,7 +68,7 @@ public class ItemDetailFragment extends Fragment implements NetworkMonitorEventL
 
             mItem = appContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
             networkMonitor.setPackageToMonitor(mItem.appPkg);
-            System.out.println("BINU Setting monitor to  " + mItem.appPkg  );
+            System.out.println("Setting monitor to  " + mItem.appPkg  );
             networkMonitor.addListener(this);
 
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
@@ -74,6 +78,7 @@ public class ItemDetailFragment extends Fragment implements NetworkMonitorEventL
             }
         }
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -89,8 +94,8 @@ public class ItemDetailFragment extends Fragment implements NetworkMonitorEventL
                     "\n\nMobile Traffic " +
                     "\nTx = " + mItem.TrafficMobTx +
                     "\nRx = " + mItem.TrafficMobRx ;
-
-            ((TextView) rootView.findViewById(R.id.item_detail)).setText(details);
+            mDetailTxt = rootView.findViewById(R.id.item_detail) ;
+            mDetailTxt.setText(details);
         }
 
         return rootView;
@@ -120,8 +125,25 @@ public class ItemDetailFragment extends Fragment implements NetworkMonitorEventL
                     break;
             }
         }
-        //TODO How  to refresh ???
-        System.out.println("");
+
+
+        String  details = mItem.appPkg +
+                "\n\nWiFi Traffic " +
+                "\nTx = " + mItem.TrafficTx +
+                "\nRx = " + mItem.TrafficRx +
+                "\n\nMobile Traffic " +
+                "\nTx = " + mItem.TrafficMobTx +
+                "\nRx = " + mItem.TrafficMobRx ;
+
+
+
+        mDetailTxt.setText(details);
+
+        System.out.println("Details : " + mItem.appPkg +
+                " Traffic " + ConnectivityManager.TYPE_WIFI +
+                "  Tx = " + rxValue +
+                "  Rx = " + txValue );
+
 
     }
 }
