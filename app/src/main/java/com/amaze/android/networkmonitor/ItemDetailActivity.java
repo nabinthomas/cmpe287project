@@ -143,6 +143,8 @@ public class ItemDetailActivity extends AppCompatActivity { //implements Network
                 }
                 return;
             }
+            default:
+                break;
         }
     }
 
