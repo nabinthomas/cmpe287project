@@ -48,12 +48,12 @@ public class ItemListActivity extends AppCompatActivity implements NetworkMonito
     private NetworkMonitor networkMonitor = null;
 
     /**
-     * Cached reference to the textview which shows the Tx Speed
+     * Cached reference to the textView which shows the Tx Speed
      */
     private TextView txSpeedText = null;
 
     /**
-     * Cached reference to the textview which shows the Rx Speed
+     * Cached reference to the textView which shows the Rx Speed
      */
     private TextView rxSpeedText = null;
 

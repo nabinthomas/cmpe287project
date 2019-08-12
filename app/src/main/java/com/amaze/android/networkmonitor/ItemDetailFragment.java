@@ -23,7 +23,7 @@ import android.widget.TextView;
 public class ItemDetailFragment extends Fragment implements NetworkMonitorEventListener {
 
     /**
-     * Reference to the textview which shows thedetail
+     * Reference to the textView which shows the detail
      */
     private TextView mDetailTxt = null;
     /**
