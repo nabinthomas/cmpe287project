@@ -70,6 +70,18 @@ public class ItemListActivity extends AppCompatActivity implements NetworkMonito
      */
     private AppContent appContent = null;
 
+    /**
+     *
+     * Threshold above which Notifications are required.
+     */
+    private long rxThreshold = 50 * 1024;
+
+    /**
+     *
+     * Threshold above which Notifications are required.
+     */
+    private long txThreshold = 50 * 1024;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,10 +149,14 @@ public class ItemListActivity extends AppCompatActivity implements NetworkMonito
         /// TODO: Move this update to UI Thread to be safe
         txSpeedText.setText(NetworkMonitor.getFormattedSpeed(txValue, txUnit));
         rxSpeedText.setText(NetworkMonitor.getFormattedSpeed(rxValue, rxUnit));
-        long rxThreshold = 50 * 1024;
+
 
         if (rxValue > rxThreshold) {
-            notificationDialog("youtube", rxThreshold, NetworkMonitor.Unit.bytesPerSec);
+            notificationDialog("System Download Speed", rxThreshold, NetworkMonitor.Unit.bytesPerSec);
+        }
+
+        if (txValue > txThreshold) {
+            notificationDialog("System Upload Speed", txThreshold, NetworkMonitor.Unit.bytesPerSec);
         }
     }
 
