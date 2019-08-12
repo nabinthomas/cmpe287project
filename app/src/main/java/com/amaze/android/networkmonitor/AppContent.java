@@ -66,7 +66,7 @@ public class AppContent  {
     }
 
     private AppItem createAppItem(int position, String  Name, String packageName) {
-        System.out.println("AppaItem    "+ packageName   );
+        System.out.println("AppItem    "+ packageName   );
         return new AppItem(String.valueOf(position),  Name, packageName);
     }
 
@@ -83,9 +83,13 @@ public class AppContent  {
 
 
         long TrafficRx;
+        NetworkMonitor.Unit trafficRxUnit;
         long TrafficTx;
+        NetworkMonitor.Unit trafficTxUnit;
         long TrafficMobRx;
+        NetworkMonitor.Unit trafficMobRxUnit;
         long TrafficMobTx;
+        NetworkMonitor.Unit trafficMobTxUnit;
 
 
         public AppItem(String id, String name, String pkg) {
@@ -94,9 +98,13 @@ public class AppContent  {
             this.appPkg = pkg;
 
             this.TrafficMobRx = 0 ;
+            this.trafficMobRxUnit = NetworkMonitor.Unit.bytes;
             this.TrafficMobTx = 0 ;
+            this.trafficMobTxUnit = NetworkMonitor.Unit.bytes;
             this.TrafficRx = 0 ;
+            this.trafficRxUnit = NetworkMonitor.Unit.bytes;
             this.TrafficTx = 0 ;
+            this.trafficTxUnit = NetworkMonitor.Unit.bytes;
 
         }
 

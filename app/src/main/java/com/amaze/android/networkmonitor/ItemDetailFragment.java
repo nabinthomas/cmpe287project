@@ -23,7 +23,7 @@ import android.widget.TextView;
 public class ItemDetailFragment extends Fragment implements NetworkMonitorEventListener {
 
     /**
-     * Reference to the textview which shows thedetail
+     * Reference to the textView which shows the detail
      */
     private TextView mDetailTxt = null;
     /**
@@ -89,11 +89,11 @@ public class ItemDetailFragment extends Fragment implements NetworkMonitorEventL
         if (mItem != null) {
             String  details = mItem.appPkg +
                     "\n\nWiFi Traffic " +
-                    "\nTx = " + mItem.TrafficTx +
-                    "\nRx = " + mItem.TrafficRx +
+                    "\nTx = " + NetworkMonitor.getFormattedSpeed(mItem.TrafficTx, mItem.trafficTxUnit) +
+                    "\nRx = " + NetworkMonitor.getFormattedSpeed(mItem.TrafficRx, mItem.trafficRxUnit) +
                     "\n\nMobile Traffic " +
-                    "\nTx = " + mItem.TrafficMobTx +
-                    "\nRx = " + mItem.TrafficMobRx ;
+                    "\nTx = " + NetworkMonitor.getFormattedSpeed(mItem.TrafficMobTx, mItem.trafficMobTxUnit) +
+                    "\nRx = " + NetworkMonitor.getFormattedSpeed(mItem.TrafficMobRx, mItem.trafficMobRxUnit) ;
             mDetailTxt = rootView.findViewById(R.id.item_detail) ;
             mDetailTxt.setText(details);
         }
@@ -129,11 +129,11 @@ public class ItemDetailFragment extends Fragment implements NetworkMonitorEventL
 
         String  details = mItem.appPkg +
                 "\n\nWiFi Traffic " +
-                "\nTx = " + mItem.TrafficTx +
-                "\nRx = " + mItem.TrafficRx +
+                "\nTx = " + NetworkMonitor.getFormattedSpeed(mItem.TrafficTx, mItem.trafficTxUnit) +
+                "\nRx = " + NetworkMonitor.getFormattedSpeed(mItem.TrafficRx, mItem.trafficRxUnit) +
                 "\n\nMobile Traffic " +
-                "\nTx = " + mItem.TrafficMobTx +
-                "\nRx = " + mItem.TrafficMobRx ;
+                "\nTx = " + NetworkMonitor.getFormattedSpeed(mItem.TrafficMobTx, mItem.trafficMobTxUnit) +
+                "\nRx = " + NetworkMonitor.getFormattedSpeed(mItem.TrafficMobRx, mItem.trafficMobRxUnit) ;
 
         mDetailTxt.setText(details);
 

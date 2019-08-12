@@ -29,10 +29,10 @@ import androidx.core.content.ContextCompat;
 
 interface NetworkMonitorEventListener {
 
-    public void handleReportGlobalSpeed(long rxValue, NetworkMonitor.Unit rxUnit,
+    void handleReportGlobalSpeed(long rxValue, NetworkMonitor.Unit rxUnit,
                                         long txValue, NetworkMonitor.Unit txUnit);
 
-    public void handleReportAppBytesTransferred(String packageName, long rxValue, long txValue, NetworkMonitor.Unit unit, int networkType);
+    void handleReportAppBytesTransferred(String packageName, long rxValue, long txValue, NetworkMonitor.Unit unit, int networkType);
 }
 
 public class NetworkMonitor extends AsyncTask<NetworkMonitorEventListener, Integer, Long> {
@@ -47,7 +47,7 @@ public class NetworkMonitor extends AsyncTask<NetworkMonitorEventListener, Integ
         megaBytes,
         teraBytes,
         UnknownUnit
-    };
+    }
 
     Context appContext = null;
 
@@ -298,7 +298,7 @@ public class NetworkMonitor extends AsyncTask<NetworkMonitorEventListener, Integ
         return thisInstance;
     }
 
-    Set<NetworkMonitorEventListener> listenerSet;
+    final Set<NetworkMonitorEventListener> listenerSet;
 
     protected NetworkMonitor() {
         listenerSet = new HashSet<NetworkMonitorEventListener>();
