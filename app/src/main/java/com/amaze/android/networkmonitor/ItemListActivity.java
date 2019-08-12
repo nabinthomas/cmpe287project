@@ -1,14 +1,21 @@
 package com.amaze.android.networkmonitor;
 
+import android.annotation.SuppressLint;
 import android.app.AppOpsManager;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 
+import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 
@@ -130,6 +137,11 @@ public class ItemListActivity extends AppCompatActivity implements NetworkMonito
         /// TODO: Move this update to UI Thread to be safe
         txSpeedText.setText(NetworkMonitor.getFormattedSpeed(txValue, txUnit));
         rxSpeedText.setText(NetworkMonitor.getFormattedSpeed(rxValue, rxUnit));
+        long rxThreshold = 50 * 1024;
+
+        if (rxValue > rxThreshold) {
+            notificationDialog("youtube", rxThreshold, NetworkMonitor.Unit.bytesPerSec);
+        }
     }
 
     public void handleReportAppBytesTransferred(String packageName, long rxValue, long txValue, NetworkMonitor.Unit unit, int networkType) {
@@ -138,6 +150,34 @@ public class ItemListActivity extends AppCompatActivity implements NetworkMonito
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView, AppContent appContent) {
         recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, appContent.ITEMS, mTwoPane));
+    }
+
+    // @RequiresApi(api = Build.VERSION_CODES.O)
+    private void notificationDialog(String app_name, long threshold, NetworkMonitor.Unit txUnit) {
+
+        NotificationManager notifManager = (NotificationManager) this.getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        String NOTIFICATION_CHANNEL_ID = "Network_monitor";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            @SuppressLint("WrongConstant") NotificationChannel notifChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "My Notifications", NotificationManager.IMPORTANCE_MAX);
+            // Configure the notification channel.
+            notifChannel.setDescription("Network Monitor Channel description");
+            notifChannel.enableLights(true);
+            notifChannel.setLightColor(Color.RED);
+            notifChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
+            notifChannel.enableVibration(true);
+            notifManager.createNotificationChannel(notifChannel);
+        }
+        NotificationCompat.Builder notifBuilder = new NotificationCompat.Builder(this.getApplicationContext(), NOTIFICATION_CHANNEL_ID);
+        notifBuilder.setAutoCancel(true)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setWhen(System.currentTimeMillis())
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setTicker("NetworkMonitor")
+                //.setPriority(Notification.PRIORITY_MAX)
+                .setContentTitle("Network usage crossed threshold " + NetworkMonitor.getFormattedSpeed(threshold, txUnit))
+                .setContentText("App: " + app_name)
+                .setContentInfo("Information");
+        notifManager.notify(1, notifBuilder.build());
     }
 
     public static class SimpleItemRecyclerViewAdapter

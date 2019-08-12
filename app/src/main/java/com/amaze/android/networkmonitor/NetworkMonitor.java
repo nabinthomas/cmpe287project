@@ -95,34 +95,6 @@ public class NetworkMonitor extends AsyncTask<NetworkMonitorEventListener, Integ
         return units;
     }
 
-    // @RequiresApi(api = Build.VERSION_CODES.O)
-    private void notificationDialog(String app_name, long threshold, NetworkMonitor.Unit txUnit) {
-
-        NotificationManager notifManager = (NotificationManager) appContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        String NOTIFICATION_CHANNEL_ID = "Network_monitor";
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            @SuppressLint("WrongConstant") NotificationChannel notifChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "My Notifications", NotificationManager.IMPORTANCE_MAX);
-            // Configure the notification channel.
-            notifChannel.setDescription("Network Monitor Channel description");
-            notifChannel.enableLights(true);
-            notifChannel.setLightColor(Color.RED);
-            notifChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
-            notifChannel.enableVibration(true);
-            notifManager.createNotificationChannel(notifChannel);
-        }
-        NotificationCompat.Builder notifBuilder = new NotificationCompat.Builder(appContext, NOTIFICATION_CHANNEL_ID);
-        notifBuilder.setAutoCancel(true)
-                .setDefaults(Notification.DEFAULT_ALL)
-                .setWhen(System.currentTimeMillis())
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setTicker("NetworkMonitor")
-                //.setPriority(Notification.PRIORITY_MAX)
-                .setContentTitle("Network usage crossed threshold " + NetworkMonitor.getFormattedSpeed(threshold, txUnit))
-                .setContentText("App: " + app_name)
-                .setContentInfo("Information");
-        notifManager.notify(1, notifBuilder.build());
-    }
-
     /**
      * Setup the listener to monitor network traffic from a specific App.
      * If this is not called, then the monitoring happens for all Apps.
@@ -148,7 +120,7 @@ public class NetworkMonitor extends AsyncTask<NetworkMonitorEventListener, Integ
         long lastRxBytes = 0, lastTxBytes = 0;
         long currentRxBytes = 0;
         long currentTxBytes = 0;
-        long rxThreshold = 50 * 1024;
+
         lastRxBytes = TrafficStats.getTotalRxBytes();
         lastTxBytes = TrafficStats.getTotalTxBytes();
 
@@ -176,9 +148,6 @@ public class NetworkMonitor extends AsyncTask<NetworkMonitorEventListener, Integ
                             (long) currentTxSpeed, Unit.bytesPerSec);
                 }
 
-                if (currentRxSpeed > rxThreshold) {
-                    notificationDialog("youtube", rxThreshold, NetworkMonitor.Unit.bytesPerSec);
-                }
 
                 if (isCancelled()) break;
             } catch (Exception e) {
