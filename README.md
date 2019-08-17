@@ -16,6 +16,7 @@ This is an app which tracks the network bandwidth usage on Android devices.
 
 1. Clone the repository 
   <pre>
+  git clone 
   </pre>
 2. Open the project in Android Studio
 3. Build and run using the emulator
