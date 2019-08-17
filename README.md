@@ -16,7 +16,12 @@ This is an app which tracks the network bandwidth usage on Android devices.
 
 1. Clone the repository 
   <pre>
-  git clone 
+  git clone https://github.com/nabinthomas/cmpe287project.git
   </pre>
-2. Open the project in Android Studio
+2. A Directory named cmpe287project will be created and the code will be downloaded. 
+2. Open Android Studio and open the above folder to open the project. 
 3. Build and run using the emulator
+4. First time when the App starts, it request for Usage Monitor Access. This is required for the app to monitor Network data usage by each App. 
+5. If you have some apps running in background which uses network, the current upload and download speed will be shown on the Main Activity. 
+6. Selecting an App in the main screen will show the network usage by the app. 
+7. When the first time the App detail screen is opened, App will request permission for Phone access. App will not make phone calls, but this permission is required to use the APIs to access detailed network usage. 
